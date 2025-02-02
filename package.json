@@ -1,0 +1,31 @@
+{
+  "name": "ticket-manager",
+  "version": "1.0.0",
+  "description": "This is a Online Ticket Manager Backend",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "db:migrate": "npx sequelize-cli db:migrate --config src/config/config.js",
+    "db:seed": "npx sequelize-cli db:seed:all --config src/config/config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yasiru Nilan",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "http-status-codes": "^2.3.0",
+    "joi": "^17.13.3",
+    "morgan": "^1.10.0",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
