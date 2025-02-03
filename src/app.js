@@ -4,7 +4,8 @@ import morgan from "morgan";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import routes from "./routes/index.js";
 import logger from "./utils/logger.js";
-import passport from './config/passport.js';
+import passport from "./config/passport.js";
+import swaggerRouter from "./config/swagger.js";
 
 const app = express();
 
@@ -22,10 +23,11 @@ app.use(
 app.use(passport.initialize());
 
 app.use("/api", routes);
+app.use("/api/v1", swaggerRouter);
 
 app.use(errorHandler);
 // Log unhandled rejections
-process.on('unhandledRejection', (reason, promise) => {
-    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  });
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
 export default app;

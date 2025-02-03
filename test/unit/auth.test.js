@@ -24,5 +24,8 @@ describe("Auth Service", () => {
     });
 
     await expect(authService.login(user)).rejects.toThrow(AuthenticationError);
+    await expect(authService.login(user)).rejects.toThrow(
+      "Failed to generate token"
+    );
   });
 });
