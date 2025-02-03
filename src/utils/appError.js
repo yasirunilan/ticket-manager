@@ -27,6 +27,12 @@ class UnauthorizedError extends AppError {
   }
 }
 
+class AuthenticationError extends AppError {
+  constructor(message) {
+    super(message, StatusCodes.UNAUTHORIZED);
+  }
+}
+
 class ForbiddenError extends AppError {
   constructor(message) {
     super(message, StatusCodes.FORBIDDEN);
@@ -45,5 +51,6 @@ export {
   NotFoundError,
   UnauthorizedError,
   ForbiddenError,
-  ConflictError
+  ConflictError,
+  AuthenticationError
 };

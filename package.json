@@ -7,7 +7,7 @@
     "start": "nodemon server.js",
     "db:migrate": "npx sequelize-cli db:migrate --config src/config/config.js",
     "db:seed": "npx sequelize-cli db:seed:all --config src/config/config.js",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "author": "Yasiru Nilan",
   "license": "ISC",
@@ -20,7 +20,11 @@
     "helmet": "^8.0.0",
     "http-status-codes": "^2.3.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "sequelize": "^6.37.5",
     "sqlite3": "^5.1.7",
     "winston": "^3.17.0"

@@ -7,11 +7,13 @@ const config = {
     dialect: "sqlite",
     storage: process.env.DB_STORAGE || "./database.sqlite",
     jwtSecret: process.env.JWT_SECRET || "your_jwt_secret",
+    jwtExpires: process.env.JWT_EXPIRES || "28d",
   },
   test: {
     dialect: process.env.DB_DIALECT_TEST || "sqlite",
     storage: process.env.DB_STORAGE_TEST || "./test-database.sqlite",
     jwtSecret: process.env.JWT_SECRET || "your_jwt_secret",
+    jwtExpires: process.env.JWT_EXPIRES || "1h",
   },
   production: {
     dialect: process.env.DB_DIALECT_PROD || "sqlite",

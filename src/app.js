@@ -4,6 +4,7 @@ import morgan from "morgan";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import routes from "./routes/index.js";
 import logger from "./utils/logger.js";
+import passport from './config/passport.js';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(
     },
   })
 );
+app.use(passport.initialize());
 
 app.use("/api", routes);
 
