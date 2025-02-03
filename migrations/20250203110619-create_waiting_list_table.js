@@ -1,6 +1,5 @@
-'use strict';
-import { DataTypes } from 'sequelize';
-import { BookingStatus } from '../src/utils/enums.js';
+"use strict";
+import { DataTypes } from "sequelize";
 
 /** @type {import('sequelize-cli').Migration} */
 export async function up(queryInterface, Sequelize) {
@@ -10,7 +9,7 @@ export async function up(queryInterface, Sequelize) {
    * Example:
    * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
    */
-  await queryInterface.createTable("bookings", {
+  await queryInterface.createTable("waiting_list", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -20,36 +19,31 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false,
       references: {
-        model: 'users',
-        key: 'id',
+        model: "users",
+        key: "id",
       },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     eventId: {
       type: Sequelize.INTEGER,
       allowNull: false,
       references: {
-        model: 'events',
-        key: 'id',
+        model: "events",
+        key: "id",
       },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    },
-    status: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      defaultValue: BookingStatus.CONFIRMED
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,
-      defaultValue: Sequelize.DATE
+      defaultValue: Sequelize.DATE,
     },
     updatedAt: {
       allowNull: false,
       type: Sequelize.DATE,
-      defaultValue: Sequelize.DATE
+      defaultValue: Sequelize.DATE,
     },
   });
 }
@@ -60,6 +54,5 @@ export async function down(queryInterface, Sequelize) {
    * Example:
    * await queryInterface.dropTable('users');
    */
-  await queryInterface.dropTable('bookings');
-
+  await queryInterface.dropTable("waiting_list");
 }

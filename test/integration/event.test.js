@@ -1,14 +1,14 @@
 import request from "supertest";
 import app from "../../src/app.js";
-import Event from "../../src/models/event.js";
 import User from "../../src/models/user.js";
 import sequelize from "../../src/db/database.js";
 import jwt from "jsonwebtoken";
 import config from "../../src/config/config.js";
 
+
 describe("Event API Integration Tests", () => {
   let token;
-  let payload = {
+  let userPayload = {
     id: 2,
     email: "testevent@example.com",
     password: "password",
@@ -19,19 +19,20 @@ describe("Event API Integration Tests", () => {
 
     // Generate a token for the test user
     token = jwt.sign(
-      { id: payload.id, email: payload.email },
+      { id: userPayload.id, email: userPayload.email },
       config.jwtSecret,
       {
         expiresIn: config.jwtExpires,
       }
     );
 
-    await User.create(payload);
+    await User.create(userPayload);
+
   });
 
   afterAll(async () => {
     // Clean up the test user after each test
-    await User.destroy({ where: { email: payload.email } });
+    await User.destroy({ where: { email: userPayload.email } });
     // Close the database connection after all tests
     await sequelize.close();
   });
@@ -68,5 +69,26 @@ describe("Event API Integration Tests", () => {
         '"total" is not allowed',
       ])
     );
+  });
+
+  it("should return 404 for GET /event/:eventId with non existing event id", async () => {
+    const res = await request(app).get("/api/v1/event/100");
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.message).toEqual("Event not found");
+  });
+
+  it("should return 200 for GET /events/:eventId when event exists", async () => {
+    const payload = { name: "Concert", totalTickets: 100 };
+
+    const res = await request(app)
+      .get("/api/v1/event/1")
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("event");
+    expect(res.body.event.name).toEqual(payload.name);
+    expect(res.body.event.totalTickets).toEqual(payload.totalTickets);
+    expect(res.body.event.availableTickets).toEqual(payload.totalTickets);
+    expect(res.body.event).toHaveProperty('waitingList');
+
   });
 });

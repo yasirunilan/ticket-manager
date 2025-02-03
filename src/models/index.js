@@ -3,7 +3,7 @@
 import { readdirSync } from 'fs';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, join, basename } from 'path';
-import Sequelize, { DataTypes } from 'sequelize';
+import Sequelize from 'sequelize';
 import config from '../config/config.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,11 +30,12 @@ const initializeModels = async () => {
   for (const file of files) {
     const modelModule = await import(pathToFileURL(join(__dirname, file)).href);
     const model = modelModule.default;
-    model.init(model.attributes, {
+    model.init(model.rawAttributes, {
       sequelize,
       modelName: model.name,
       tableName: model.tableName,
       timestamps: model.timestamps,
+      defaultScope: model.options.defaultScope,
     });
     db[model.name] = model;
   }

@@ -7,6 +7,12 @@ const createEvent = asyncHandler(async (req, res) => {
   res.status(StatusCodes.CREATED).json({ event });
 });
 
+const getEvent = asyncHandler(async (req, res) => {
+  const event = await eventService.getEvent(req.params.eventId);
+  res.status(StatusCodes.OK).json({ event });
+});
+
 export default {
   createEvent,
+  getEvent
 };

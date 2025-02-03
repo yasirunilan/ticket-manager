@@ -2,8 +2,8 @@ import { DataTypes } from "sequelize";
 import sequelize from "../db/database.js";
 import { BookingStatus } from "../utils/enums.js";
 
-const Booking = sequelize.define(
-  "Booking",
+const WaitingList = sequelize.define(
+  "WaitingList",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -26,24 +26,19 @@ const Booking = sequelize.define(
         key: "id",
       },
     },
-    status: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: BookingStatus.CONFIRMED
-    },
   },
   {
-    tableName: "bookings",
+    tableName: "waiting_list",
   }
 );
-Booking.associate = (models) => {
-  Booking.belongsTo(models.Event, {
+WaitingList.associate = (models) => {
+  WaitingList.belongsTo(models.Event, {
     foreignKey: "eventId",
     as: "event",
   });
-  Booking.belongsTo(models.User, {
+  WaitingList.belongsTo(models.User, {
     foreignKey: "userId",
     as: "user",
   });
 };
-export default Booking;
+export default WaitingList;

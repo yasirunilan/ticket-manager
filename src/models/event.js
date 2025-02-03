@@ -56,7 +56,9 @@ const Event = sequelize.define(
       defaultValue: 0,
     },
   },
-  { tableName: "events" }
+  {
+    tableName: "events",
+  }
 );
 Event.beforeCreate(async (event) => {
   event.availableTickets = event.totalTickets;
@@ -65,6 +67,10 @@ Event.associate = (models) => {
   Event.hasMany(models.Booking, {
     foreignKey: "eventId",
     as: "bookings",
+  });
+  Event.hasMany(models.WaitingList, {
+    foreignKey: "eventId",
+    as: "waitingList",
   });
 };
 export default Event;

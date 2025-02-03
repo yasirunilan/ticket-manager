@@ -20,7 +20,9 @@ const User = sequelize.define(
       allowNull: false,
     },
   },
-  { tableName: "users" }
+  {
+    tableName: "users",
+  }
 );
 // Hook to hash password before saving
 User.beforeCreate(async (user, options) => {
