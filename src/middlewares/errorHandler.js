@@ -2,9 +2,9 @@ import { StatusCodes, ReasonPhrases } from "http-status-codes";
 import {
   ValidationError,
   NotFoundError,
-  UnauthorizedError,
+  AuthenticationError,
 } from "../utils/appError.js";
-import logger from '../utils/logger.js';
+import logger from "../utils/logger.js";
 
 const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
@@ -13,7 +13,7 @@ const errorHandler = (err, req, res, next) => {
   if (err instanceof ValidationError) {
     statusCode = err.statusCode;
     message = err.errors || "Validation Failed";
-  } else if (err instanceof UnauthorizedError) {
+  } else if (err instanceof AuthenticationError) {
     statusCode = err.statusCode;
     message = err.message || "Authentication Failed";
   } else if (err instanceof NotFoundError) {
@@ -34,6 +34,4 @@ const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-
-
-export {errorHandler, asyncHandler};
+export { errorHandler, asyncHandler };

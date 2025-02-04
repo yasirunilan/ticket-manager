@@ -21,21 +21,9 @@ class NotFoundError extends AppError {
   }
 }
 
-class UnauthorizedError extends AppError {
-  constructor(message) {
-    super(message, StatusCodes.UNAUTHORIZED);
-  }
-}
-
 class AuthenticationError extends AppError {
   constructor(message) {
     super(message, StatusCodes.UNAUTHORIZED);
-  }
-}
-
-class ForbiddenError extends AppError {
-  constructor(message) {
-    super(message, StatusCodes.FORBIDDEN);
   }
 }
 
@@ -49,8 +37,6 @@ export {
   AppError,
   ValidationError,
   NotFoundError,
-  UnauthorizedError,
-  ForbiddenError,
   ConflictError,
   AuthenticationError
 };

@@ -10,6 +10,20 @@ const options = {
       version: '1.0.0',
       description: 'This is the API documentation for the Ticket Manager Backend',
     },
+    components: {
+      securitySchemes: {
+        bearerAUth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT"
+        }
+      }
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
     servers: [
       {
         url: 'http://localhost:3000/api/v1',
@@ -22,6 +36,6 @@ const options = {
 const specs = swaggerJsdoc(options);
 
 const swaggerRouter = Router();
-swaggerRouter.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
+swaggerRouter.use('/', swaggerUi.serve, swaggerUi.setup(specs));
 
 export default swaggerRouter;

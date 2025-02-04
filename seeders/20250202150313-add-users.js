@@ -13,25 +13,19 @@ export async function up(queryInterface, Sequelize) {
    * }], {});
    */
   const password = await bcrypt.hash("Test@123", 10);
+  // add 10 users to the database
+  const users = [];
+  const timestamp = new Date();
 
-  await queryInterface.bulkInsert(
-    "users",
-    [
-      {
-        email: "user1@test.com",
-        password,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        email: "user2@test.com",
-        password,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ],
-    {}
-  );
+  for (let i = 1; i <= 10; i++) {
+    users.push({
+      email: `user${i}@test.com`,
+      password,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    });
+  }
+  await queryInterface.bulkInsert("users", users, {});
 }
 export async function down(queryInterface, Sequelize) {
   /**

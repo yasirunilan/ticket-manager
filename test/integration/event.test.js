@@ -1,10 +1,10 @@
 import request from "supertest";
 import app from "../../src/app.js";
 import User from "../../src/models/user.js";
-import sequelize from "../../src/db/database.js";
+import Event from "../../src/models/event.js";
 import jwt from "jsonwebtoken";
 import config from "../../src/config/config.js";
-
+import sequelize from "../../src/db/database.js";
 
 describe("Event API Integration Tests", () => {
   let token;
@@ -14,7 +14,6 @@ describe("Event API Integration Tests", () => {
     password: "password",
   };
   beforeAll(async () => {
-    // Synchronize the models with the database
     await sequelize.sync({ force: true });
 
     // Generate a token for the test user
@@ -27,13 +26,12 @@ describe("Event API Integration Tests", () => {
     );
 
     await User.create(userPayload);
-
   });
 
   afterAll(async () => {
     // Clean up the test user after each test
     await User.destroy({ where: { email: userPayload.email } });
-    // Close the database connection after all tests
+    await Event.destroy({ where: { name: "Concert" } });
     await sequelize.close();
   });
 
@@ -49,6 +47,18 @@ describe("Event API Integration Tests", () => {
     expect(res.body.event.name).toEqual(payload.name);
     expect(res.body.event.totalTickets).toEqual(payload.totalTickets);
     expect(res.body.event.availableTickets).toEqual(payload.totalTickets);
+  });
+
+  it("should return 409 for POST /events/add with event containing same name", async () => {
+    const payload = { name: "Concert", totalTickets: 100 };
+    const res = await request(app)
+      .post("/api/v1/event/add")
+      .set("Authorization", `Bearer ${token}`)
+      .send(payload);
+
+    expect(res.statusCode).toEqual(409);
+    expect(res.body.message).toEqual("Event with the same name already exists");
+
   });
 
   it("should return 401 for POST /events/add when access token is not passed", async () => {
@@ -72,7 +82,8 @@ describe("Event API Integration Tests", () => {
   });
 
   it("should return 404 for GET /event/:eventId with non existing event id", async () => {
-    const res = await request(app).get("/api/v1/event/100");
+    const eventId = 6;
+    const res = await request(app).get(`/api/v1/event/${eventId}`);
     expect(res.statusCode).toEqual(404);
     expect(res.body.message).toEqual("Event not found");
   });
@@ -80,15 +91,13 @@ describe("Event API Integration Tests", () => {
   it("should return 200 for GET /events/:eventId when event exists", async () => {
     const payload = { name: "Concert", totalTickets: 100 };
 
-    const res = await request(app)
-      .get("/api/v1/event/1")
+    const res = await request(app).get("/api/v1/event/1");
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("event");
     expect(res.body.event.name).toEqual(payload.name);
     expect(res.body.event.totalTickets).toEqual(payload.totalTickets);
     expect(res.body.event.availableTickets).toEqual(payload.totalTickets);
-    expect(res.body.event).toHaveProperty('waitingList');
-
+    expect(res.body.event).toHaveProperty("waitingList");
   });
 });

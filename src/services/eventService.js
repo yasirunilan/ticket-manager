@@ -15,15 +15,15 @@ export class EventService {
   }
   async getEvent(eventId) {
     const existingEvent = await Event.findByPk(eventId);
-    const waitingListForEvent = await WaitingList.findAll({
-      where: { eventId: eventId },
-    });
     if (!existingEvent) {
       throw new NotFoundError("Event not found");
     }
+    const waitingListForEvent = await WaitingList.findAll({
+      where: { eventId: eventId },
+    });
     const eventWithWaitingListCount = {
       ...existingEvent.toJSON(),
-      waitingList: waitingListForEvent
+      waitingList: waitingListForEvent,
     };
     return eventWithWaitingListCount;
   }

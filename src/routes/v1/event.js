@@ -73,12 +73,14 @@ const router = Router();
  *   post:
  *     summary: Create a new event
  *     tags: [Event]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/EventDetails'
+ *             $ref: '#/components/schemas/CreateEventPayload'
  *     responses:
  *       201:
  *         description: The event was successfully created
@@ -118,7 +120,7 @@ router.post(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Event'
+ *               $ref: '#/components/schemas/EventDetails'
  *       404:
  *         description: Event not found
  *       500:

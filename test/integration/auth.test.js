@@ -6,6 +6,7 @@ import sequelize from "../../src/db/database.js";
 describe("Auth API Integration Tests", () => {
   beforeAll(async () => {
     await sequelize.sync({ force: true });
+
     await User.create({
       id: 1,
       email: "testauth@example.com",
@@ -16,7 +17,6 @@ describe("Auth API Integration Tests", () => {
   afterAll(async () => {
     // Clean up the test user after each test
     await User.destroy({ where: { email: "testauth@example.com" } });
-    // Close the database connection after all tests
     await sequelize.close();
   });
 
@@ -32,6 +32,13 @@ describe("Auth API Integration Tests", () => {
     const res = await request(app)
       .post("/api/v1/auth/login")
       .send({ email: "testauth@example.com", password: "test" });
+    expect(res.statusCode).toEqual(401);
+    expect(res.body.message).toEqual("Incorrect credentials.");
+  });
+  it("should return 401 for POST /auth/login when user not exists", async () => {
+    const res = await request(app)
+      .post("/api/v1/auth/login")
+      .send({ email: "testauth1@example.com", password: "test" });
     expect(res.statusCode).toEqual(401);
     expect(res.body.message).toEqual("Incorrect credentials.");
   });
