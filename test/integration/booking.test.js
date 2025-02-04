@@ -1,15 +1,11 @@
 import request from "supertest";
 import app from "../../src/app.js";
-
-import sequelize from "../../src/db/database.js";
 import User from "../../src/models/user.js";
 import jwt from "jsonwebtoken";
 import config from "../../src/config/config.js";
 import Booking from "../../src/models/booking.js";
 import Event from "../../src/models/event.js";
 import WaitingList from "../../src/models/waitingList.js";
-import { NotFoundError } from "../../src/utils/appError.js";
-import bookingService from "../../src/services/bookingService.js";
 
 describe("BookingService", () => {
   let token;
@@ -53,10 +49,8 @@ describe("BookingService", () => {
     eventId: 6,
     userId: 3,
   };
-  
-  beforeAll(async () => {
-    await sequelize.sync({ force: true });
 
+  beforeAll(async () => {
     // Generate a token for the test user
     token = jwt.sign(
       { id: userPayload.id, email: userPayload.email },
@@ -74,17 +68,16 @@ describe("BookingService", () => {
     await Booking.create(bookingPayloadOne);
     await Booking.create(bookingPayloadTwo);
     await WaitingList.create(waitingListPayloadOne);
-
   });
 
   afterAll(async () => {
-    // Clean up the test user after each test
-    // await User.destroy({ where: { email: userPayload.email } });
-    // await Event.destroy({ where: { name: eventPayload.name } });
-    await sequelize.close();
+    await Booking.destroy({ where: {} });
+    await WaitingList.destroy({ where: {} });
+    await User.destroy({ where: {} });
+    await Event.destroy({ where: {} });
   });
 
-  it('should return 404 when event not found', async () => {
+  it("should return 404 when event not found", async () => {
     const payload = { eventId: 999 };
     const res = await request(app)
       .post("/api/v1/booking/add")
@@ -93,7 +86,7 @@ describe("BookingService", () => {
 
     expect(res.statusCode).toEqual(404);
   });
-  it('should return 400 when incorrect payload sent', async () => {
+  it("should return 400 when incorrect payload sent", async () => {
     const payload = { testId: 999 };
     const res = await request(app)
       .post("/api/v1/booking/add")
@@ -103,7 +96,7 @@ describe("BookingService", () => {
     expect(res.statusCode).toEqual(400);
   });
 
-    it('should add to waiting list when no tickets available', async () => {
+  it("should add to waiting list when no tickets available", async () => {
     const payload = { eventId: 4 };
     const res = await request(app)
       .post("/api/v1/booking/add")
@@ -113,10 +106,12 @@ describe("BookingService", () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty("booking");
     expect(res.body.booking).toHaveProperty("message");
-    expect(res.body.booking.message).toBe("No tickets available, added to waiting list");
+    expect(res.body.booking.message).toBe(
+      "No tickets available, added to waiting list"
+    );
   });
 
-  it('should create a booking when tickets are available', async () => {
+  it("should create a booking when tickets are available", async () => {
     const payload = { eventId: 3 };
     const res = await request(app)
       .post("/api/v1/booking/add")
@@ -127,7 +122,7 @@ describe("BookingService", () => {
     expect(res.body).toHaveProperty("booking");
   });
 
-  it('should return 404 when booking not found for booking cancellation', async () => {
+  it("should return 404 when booking not found for booking cancellation", async () => {
     const payload = { bookingId: 999 };
     const res = await request(app)
       .post("/api/v1/booking/cancel")
@@ -137,7 +132,7 @@ describe("BookingService", () => {
     expect(res.statusCode).toEqual(404);
   });
 
-  it('should return 200 when booking cancelled but no waiting list is there for event', async () => {
+  it("should return 200 when booking cancelled but no waiting list is there for event", async () => {
     const payload = { bookingId: 1 };
     const res = await request(app)
       .post("/api/v1/booking/cancel")
@@ -145,9 +140,8 @@ describe("BookingService", () => {
       .send(payload);
 
     expect(res.statusCode).toEqual(200);
-
   });
-  it('should return 200 when booking cancelled and updates the waiting list', async () => {
+  it("should return 200 when booking cancelled and updates the waiting list", async () => {
     const payload = { bookingId: 2 };
     const res = await request(app)
       .post("/api/v1/booking/cancel")
@@ -155,6 +149,5 @@ describe("BookingService", () => {
       .send(payload);
 
     expect(res.statusCode).toEqual(200);
-
   });
 });

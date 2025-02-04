@@ -5,7 +5,6 @@ import sequelize from "../../src/db/database.js";
 
 describe("Auth API Integration Tests", () => {
   beforeAll(async () => {
-    await sequelize.sync({ force: true });
 
     await User.create({
       id: 1,
@@ -15,9 +14,7 @@ describe("Auth API Integration Tests", () => {
   });
 
   afterAll(async () => {
-    // Clean up the test user after each test
     await User.destroy({ where: { email: "testauth@example.com" } });
-    await sequelize.close();
   });
 
   it("should return 200 for POST /auth/login with valid credentials", async () => {

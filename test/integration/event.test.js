@@ -14,8 +14,6 @@ describe("Event API Integration Tests", () => {
     password: "password",
   };
   beforeAll(async () => {
-    await sequelize.sync({ force: true });
-
     // Generate a token for the test user
     token = jwt.sign(
       { id: userPayload.id, email: userPayload.email },
@@ -29,10 +27,8 @@ describe("Event API Integration Tests", () => {
   });
 
   afterAll(async () => {
-    // Clean up the test user after each test
     await User.destroy({ where: { email: userPayload.email } });
     await Event.destroy({ where: { name: "Concert" } });
-    await sequelize.close();
   });
 
   it("should return 201 for POST /events/add with correct payload", async () => {
