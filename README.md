@@ -65,7 +65,7 @@ npm install
     3. /cancel => /booking/cancel
     4. /status/:eventId => /event/:eventId
 - When a booking gets cancelled it isn't removed from the database but stays in db with status as "Cancelled". I did't remove it from the database because that data would be needed in the future for statistics purposes.
-- I have added 10 users to the database to ease the testing. Their credentials are email: "user<id>>@test.com" and their password is "Test@123".
+- I have added 10 users to the database to ease the testing. Their credentials are email: `user<id>@test.com` and their password is "Test@123".
 - I have added /auth/login endpoint as well to authenticate the users for the protected endpoints. When testing you can first call the login endpoint and get a token to authenticate the other endpoints.
 - The endpoint to get event details is kept public so no authentication is required. All the other endpoints are protected.
 - When a user successfully login, user get a JWT token that can be used in other endpoints.
